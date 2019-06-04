@@ -1,7 +1,7 @@
-Comment = require("../models/commentModel");
+import Comment from "../models/commentModel";
 
-exports.index = function(req, res) {
-  Comment.get(function(err, comments) {
+export const getAllComments = (req, res) => {
+  Comment.find((err, comments) => {
     if (err) {
       res.json({
         status: "error",
@@ -16,40 +16,36 @@ exports.index = function(req, res) {
   });
 };
 
-exports.new = function(req, res) {
-  var comment = new Comment();
-  comment.avatarUrl = req.body.avatarUrl;
-  comment.name = req.body.name ? req.body.name : comment.name;
-  comment.gender = req.body.gender;
-  comment.email = req.body.email;
+export const createComment = (req, res) => {
+  var comment = new Comment({
+    text: req.body.text,
+    media: req.body.media
+  });
 
-  comment.save(function(err) {
+  comment.save(err => {
     res.json({
-      message: "New comment created!",
+      message: "New comment created",
       data: comment
     });
   });
 };
 
-exports.view = function(req, res) {
-  Comment.findById(req.params.comment_id, function(err, comment) {
+export const getCommentById = (req, res) => {
+  Comment.findById(req.params.comment_id, (err, comment) => {
     if (err) res.send(err);
     res.json({
-      message: "Comment details loading..",
+      message: "Comment with id received",
       data: comment
     });
   });
 };
 
-exports.update = function(req, res) {
-  Comment.findById(req.params.comment_id, function(err, comment) {
+export const updateComment = (req, res) => {
+  Comment.findById(req.params.comment_id, (err, comment) => {
     if (err) res.send(err);
-    comment.avatarUrl = req.body.avatarUrl;
-    comment.name = req.body.name ? req.body.name : comment.name;
-    comment.gender = req.body.gender;
-    comment.email = req.body.email;
+    comment.text = req.body.text;
 
-    comment.save(function(err) {
+    comment.save(err => {
       if (err) res.json(err);
       res.json({
         message: "Comment info updated",
@@ -59,16 +55,16 @@ exports.update = function(req, res) {
   });
 };
 
-exports.delete = function(req, res) {
-  Comment.remove(
+export const deleteComment = (req, res) => {
+  Comment.deleteOne(
     {
       _id: req.params.comment_id
     },
-    function(err, comment) {
+    (err, comment) => {
       if (err) res.send(err);
       res.json({
         status: "success",
-        message: "Contact deleted"
+        message: "Comment deleted"
       });
     }
   );

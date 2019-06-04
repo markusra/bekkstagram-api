@@ -1,19 +1,13 @@
-var mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-var commentSchema = mongoose.Schema({
-  avatarUrl: String,
-  name: {
-    type: String,
-    required: true
-  },
-  gender: String,
+const commentSchema = mongoose.Schema({
+  text: String,
   create_date: {
     type: Date,
     default: Date.now
-  }
+  },
+  media: { type: mongoose.Schema.Types.ObjectId, ref: "Media" }
 });
 
-var Comment = (module.exports = mongoose.model("comment", commentSchema));
-module.exports.get = function(callback, limit) {
-  Comment.find(callback).limit(limit);
-};
+const Comment = mongoose.model("Comment", commentSchema);
+export default Comment;
