@@ -1,82 +1,168 @@
-import Media from "../models/mediaModel";
-import { success } from "../utils/response-util";
+import { error, success } from "../utils/responseTypes";
+import { Comment, Like, Media } from "../models/";
+import { initialState } from "../utils/initialState";
 
-export const getAllMedia = (req, res) => {
-  Media.find((err, media) => {
-    if (err) {
-      res.json({
-        status: "error",
-        message: err
-      });
-    }
-    res.json({
-      status: "success",
-      message: "Media retrieved successfully",
-      data: media
-    });
-  });
+let media = initialState();
+
+const getMediaObjectById = mediaId => media.find(item => item.id === mediaId);
+const deleteMediaObjectById = mediaId => {
+  const index = media.findIndex(item => item.id === mediaId);
+  if (index !== -1) {
+    media.splice(index, 1);
+  }
 };
 
-export const createMedia = (req, res) => {
-  var media = new Media();
-  media.url = req.body.url;
-
-  media.save(err => {
-    res.json({
-      message: "New media created",
+export const getAllMedia = (req, res) => {
+  return res.json(
+    success({
+      message: "Media retrieved successfully",
       data: media
-    });
-  });
+    })
+  );
 };
 
 export const getMediaById = (req, res) => {
-  Media.findById(req.params.media_id, (err, media) => {
-    if (err) res.send(err);
-    res.json({
-      message: "Media with id received",
-      data: media
-    });
-  });
+  const { mediaId } = req.params;
+  const mediaObject = getMediaObjectById(mediaId);
+
+  if (mediaObject) {
+    return res.json(
+      success({
+        message: "Media with id received",
+        data: mediaObject
+      })
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not find media with id=${mediaId} not found`
+    })
+  );
 };
 
-export const updateMedia = (req, res) => {
-  Media.findById(req.params.media_id, (err, media) => {
-    if (err) res.send(err);
-    media.url = req.body.url;
+export const createMedia = (req, res) => {
+  const { description, url } = req.body;
+  const mediaObject = Media({ description, url });
 
-    media.save(err => {
-      if (err) res.json(err);
-      res.json({
-        message: "Media info updated",
-        data: media
-      });
-    });
-  });
+  media.push(mediaObject);
+
+  return res.json(
+    success({
+      message: "New media created",
+      data: mediaObject
+    })
+  );
 };
 
-export const deleteMedia = (req, res, next) => {
-  const mediaId = req.params.media_id;
+export const deleteMedia = (req, res) => {
+  const { mediaId } = req.params;
+  const mediaObject = getMediaObjectById(mediaId);
 
-  Media.findById(mediaId, (err, media) => {
-    if (err) {
-      res.json({
-        status: "error",
-        message: err
-      });
-    }
+  if (mediaObject) {
+    deleteMediaObjectById(mediaId);
 
-    if (media) {
-      media.remove(err => {
-        if (err) res.json(err);
-        res.json(
-          success({ data: media, message: `Media with id=${mediaId} deleted` })
-        );
-      });
-    } else {
-      res.json({
-        status: "error",
-        message: `Could not find media with id=${mediaId}`
-      });
-    }
-  });
+    return res.json(
+      success({
+        message: `Media with id=${mediaId} deleted successfully`,
+        data: mediaObject
+      })
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not find media with id=${mediaId}`
+    })
+  );
+};
+
+export const getLikes = (req, res) => {
+  const { mediaId } = req.params;
+  const mediaObject = getMediaObjectById(mediaId);
+
+  if (mediaObject && mediaObject.likes) {
+    return res.json(
+      success({
+        message: `Likes for media with id=${mediaId} retrieved successfully`,
+        data: mediaObject.likes
+      })
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not find likes for media with id=${mediaId}`
+    })
+  );
+};
+
+export const createLike = (req, res) => {
+  const { mediaId } = req.params;
+  const { username } = req.body;
+  const index = media.findIndex(item => item.id === mediaId);
+
+  if (index !== -1 && username) {
+    const like = Like({ username });
+
+    media[index].likes.push(like);
+
+    return res.json(
+      success({
+        message: `New like created for media with id=${mediaId}`,
+        data: like
+      })
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not create like for media with id=${mediaId}`
+    })
+  );
+};
+
+export const getComments = (req, res) => {
+  const { mediaId } = req.params;
+  const mediaObject = getMediaObjectById(mediaId);
+
+  if (mediaObject && mediaObject.comments) {
+    return res.json(
+      success({
+        message: `Comments for media with id=${mediaId} retrieved successfully`,
+        data: mediaObject.comments
+      })
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not find comments for media with id=${mediaId}`
+    })
+  );
+};
+
+export const createComment = (req, res) => {
+  const { mediaId } = req.params;
+  const { text } = req.body;
+  const index = media.findIndex(item => item.id === mediaId);
+
+  if (index !== -1 && text) {
+    const comment = Comment({ text });
+
+    media[index].comments.push(comment);
+
+    return res.json(
+      success({
+        message: `New like created for media with id=${mediaId}`,
+        data: comment
+      })
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not create like for media with id=${mediaId}`
+    })
+  );
 };

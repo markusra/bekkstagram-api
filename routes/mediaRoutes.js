@@ -1,50 +1,38 @@
 import express from "express";
 import {
+  createComment,
+  createLike,
   createMedia,
   deleteMedia,
   getAllMedia,
+  getComments,
+  getLikes,
   getMediaById,
   updateMedia
 } from "../controllers/mediaController";
 
 const router = express.Router();
 
-/**
- *  @swagger
- *  /media:
- *    get:
- *      summary: Returns all media
- *      responses:
- *        200:
- *          description:
- */
 router
   .route("/")
   .get(getAllMedia)
   .post(createMedia);
 
-/**
- *  @swagger
- *  /media/{mediaId}:
- *    get:
- *      description: Returns the homepage
- *      parameters:
- *      - name: "commentId"
- *        in: "path"
- *        schema:
- *          type: string
- *          default: 5ca25337bf73cf8e583edf7a
- *        description: "ID of comment to return"
- *        required: true
- *      responses:
- *        200:
- *          description: It worked
- */
 router
-  .route("/:media_id")
+  .route("/:mediaId")
   .get(getMediaById)
-  .patch(updateMedia)
-  .put(updateMedia)
   .delete(deleteMedia);
+// .patch(updateMedia)
+// .put(updateMedia);
+
+router
+  .route("/:mediaId/likes")
+  .get(getLikes)
+  .put(createLike);
+
+router
+  .route("/:mediaId/comments")
+  .get(getComments)
+  .put(createComment);
 
 export default router;

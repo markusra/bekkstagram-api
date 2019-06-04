@@ -12,7 +12,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "mongoose": "^5.4.20",
+    "immer": "^3.1.2",
     "swagger-jsdoc": "^3.2.9",
     "swagger-ui-express": "^4.0.4"
   },

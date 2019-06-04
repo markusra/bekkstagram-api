@@ -1,13 +1,7 @@
-import mongoose from "mongoose";
+const getId = () => String(Math.random()).substring(2, 15);
 
-const commentSchema = mongoose.Schema({
-  text: String,
-  create_date: {
-    type: Date,
-    default: Date.now
-  },
-  media: { type: mongoose.Schema.Types.ObjectId, ref: "Media" }
+export const Comment = ({ text }) => ({
+  id: getId(),
+  createdDate: Date.now(),
+  text
 });
-
-const Comment = mongoose.model("Comment", commentSchema);
-export default Comment;

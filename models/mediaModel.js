@@ -1,20 +1,10 @@
-import mongoose from "mongoose";
+const getId = () => String(Math.random()).substring(2, 15);
 
-const mediaScheme = mongoose.Schema({
-  url: {
-    type: String,
-    required: true
-  },
-  create_date: {
-    type: Date,
-    default: Date.now
-  }
+export const Media = ({ description, url }) => ({
+  id: getId(),
+  createdDate: Date.now(),
+  description,
+  url,
+  comments: [],
+  likes: []
 });
-
-mediaScheme.pre("remove", function(next) {
-  this.model("Comment").deleteMany({ media: this._id }, next);
-});
-
-const Media = mongoose.model("Media", mediaScheme);
-
-export default Media;
