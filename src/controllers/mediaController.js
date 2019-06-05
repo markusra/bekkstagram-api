@@ -1,5 +1,5 @@
 import { error, success } from "../utils/responseTypes";
-import { Comment, Like, Media } from "../models/";
+import { Comment, Like, Media } from "../models";
 import { initialState } from "../utils/initialState";
 
 let media = initialState();
