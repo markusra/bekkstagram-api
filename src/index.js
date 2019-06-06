@@ -1,5 +1,6 @@
 import bodyParser from "body-parser";
 import express from "express";
+import cors from "cors";
 
 import defaultRoutes from "./routes/defaultRoutes";
 import mediaRoutes from "./routes/mediaRoutes";
@@ -8,6 +9,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // Application-Level Middleware
+app.use(cors());
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
