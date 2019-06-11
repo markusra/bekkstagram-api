@@ -147,7 +147,7 @@ export const createComment = (req, res) => {
   const { text, username } = req.body;
   const index = media.findIndex(item => item.id === mediaId);
 
-  if (index !== -1 && text) {
+  if (index !== -1 && text && username) {
     const comment = Comment({ text, username });
 
     media[index].comments.push(comment);
