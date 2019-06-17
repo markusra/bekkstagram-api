@@ -1,14 +1,17 @@
 import express from "express";
 import {
   createComment,
+  createCommentLike,
   createLike,
   createMedia,
   deleteMedia,
   getAllMedia,
+  getComment,
+  getCommentLikes,
   getComments,
   getLikes,
   getMediaById,
-  updateMedia
+  updateMedia,
 } from "../controllers/mediaController";
 
 const router = express.Router();
@@ -34,5 +37,14 @@ router
   .route("/:mediaId/comments")
   .get(getComments)
   .put(createComment);
+
+router
+  .route("/:mediaId/comments/:commentId")
+  .get(getComment)
+
+router
+  .route("/:mediaId/comments/:commentId/likes")
+  .get(getCommentLikes)
+  .put(createCommentLike)
 
 export default router;

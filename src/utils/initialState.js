@@ -11,6 +11,11 @@ export const initialState = () => [
         createdDate: 1559670668735,
         text: 'Utrolig stilig',
         username: 'markusra',
+        likes: [
+          {
+            username: 'marie.buoen',
+          },
+        ],
       },
     ],
     likes: [

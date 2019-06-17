@@ -5,4 +5,5 @@ export const Comment = ({ text, username }) => ({
   createdDate: Date.now(),
   text,
   username,
+  likes: [],
 });

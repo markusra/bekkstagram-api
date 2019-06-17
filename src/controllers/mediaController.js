@@ -5,6 +5,14 @@ import { initialState } from '../utils/initialState';
 let media = initialState();
 
 const getMediaObjectById = mediaId => media.find(item => item.id === mediaId);
+
+const getCommentObject = (mediaId, commentId) => {
+  const mediaObject = getMediaObjectById(mediaId);
+  const comments = mediaObject.comments;
+
+  return comments.find(item => item.id === commentId);
+}
+
 const deleteMediaObjectById = mediaId => {
   const index = media.findIndex(item => item.id === mediaId);
   if (index !== -1) {
@@ -118,6 +126,75 @@ export const createLike = (req, res) => {
   return res.json(
     error({
       message: `Could not create like for media with id=${mediaId}`,
+    }),
+  );
+};
+
+export const getComment = (req, res) => {
+  const { mediaId, commentId } = req.params;
+  const commentObject = getCommentObject(mediaId, commentId);
+
+  if (commentObject) {
+    return res.json(
+      success({
+        message: `Comment with id=${commentId} retrieved successfully`,
+        data: commentObject,
+      }),
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not find comment with id=${commentId}`,
+    }),
+  );
+};
+
+export const getCommentLikes = (req, res) => {
+  const { mediaId, commentId } = req.params;
+  const commentObject = getCommentObject(mediaId, commentId);
+
+  if (commentObject && commentObject.likes) {
+    return res.json(
+      success({
+        message: `Likes for comment with id=${commentId} retrieved successfully`,
+        data: commentObject.likes,
+      }),
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not find likes for comment with id=${commentId}`,
+    }),
+  );
+};
+
+export const createCommentLike = (req, res) => {
+  const { mediaId, commentId } = req.params;
+  const { username } = req.body;
+  const commentObject = getCommentObject(mediaId, commentId);
+
+  const mediaIndex = media.findIndex(item => item.id === mediaId);
+  const commentIndex = media[mediaIndex].comments.findIndex(item => item.id === commentId);
+
+
+  if (mediaIndex !== -1 && commentIndex !== -1 && username) {
+    const like = Like({ username });
+
+    media[mediaIndex].comments[commentIndex].likes.push(like);
+
+    return res.json(
+      success({
+        message: `New like created for comment with id=${commentId}`,
+        data: like,
+      }),
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not create like for comment with id=${commentId}`,
     }),
   );
 };
