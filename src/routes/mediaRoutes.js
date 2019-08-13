@@ -5,6 +5,8 @@ import {
   createLike,
   createMedia,
   deleteMedia,
+  deleteLike,
+  deleteCommentLike,
   getAllMedia,
   getComment,
   getCommentLikes,
@@ -31,7 +33,8 @@ router
 router
   .route("/:mediaId/likes")
   .get(getLikes)
-  .put(createLike);
+  .put(createLike)
+  .post(deleteLike);
 
 router
   .route("/:mediaId/comments")
@@ -46,5 +49,6 @@ router
   .route("/:mediaId/comments/:commentId/likes")
   .get(getCommentLikes)
   .put(createCommentLike)
+  .post(deleteCommentLike);
 
 export default router;
