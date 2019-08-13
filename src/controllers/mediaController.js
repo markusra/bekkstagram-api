@@ -130,6 +130,31 @@ export const createLike = (req, res) => {
   );
 };
 
+export const deleteLike = (req, res) => {
+  const { mediaId } = req.params;
+  const { username } = req.body;
+  const index = media.findIndex(item => item.id === mediaId);
+
+  if (index !== -1 && username) {
+    const like = Like({ username });
+
+    media.splice(index, 1);
+
+    return res.json(
+      success({
+        message: `Like deleted for media with id=${mediaId}`,
+        data: like,
+      }),
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not delete like for media with id=${mediaId}`
+    }),
+  );
+};
+
 export const getComment = (req, res) => {
   const { mediaId, commentId } = req.params;
   const commentObject = getCommentObject(mediaId, commentId);
@@ -194,7 +219,35 @@ export const createCommentLike = (req, res) => {
 
   return res.json(
     error({
-      message: `Could not create like for comment with id=${commentId}`,
+      message: `Could not create like for comment with id=${commentId} and username=${username} and commentIndex=${commentIndex} and commentobject=${commentObject}`,
+    }),
+  );
+};
+
+export const deleteCommentLike = (req, res) => {
+  const { mediaId, commentId } = req.params;
+  const { username } = req.body;
+  const commentObject = getCommentObject(mediaId, commentId);
+
+  const mediaIndex = media.findIndex(item => item.id === mediaId )
+  const commentIndex = media[mediaIndex].comments.findIndex(item => item.id === commentId);
+
+  if (mediaIndex !== -1 && commentIndex !== -1 && username) {
+    const like = Like({ username });
+
+    media[mediaIndex].comments.splice(commentIndex, 1);
+
+    return res.json(
+      success({
+        message: `Like deleted for comment with id=${commentId}`,
+        data: like,
+      }),
+    );
+  }
+
+  return res.json(
+    error({
+      message: `Could not delete like for comment with id=${commentId}`,
     }),
   );
 };
