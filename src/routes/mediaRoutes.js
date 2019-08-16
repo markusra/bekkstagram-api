@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express';
 import {
   createComment,
   createCommentLike,
@@ -14,41 +14,38 @@ import {
   getLikes,
   getMediaById,
   updateMedia,
-} from "../controllers/mediaController";
+} from '../controllers/mediaController';
 
 const router = express.Router();
 
 router
-  .route("/")
+  .route('/')
   .get(getAllMedia)
   .post(createMedia);
 
 router
-  .route("/:mediaId")
+  .route('/:mediaId')
   .get(getMediaById)
   .delete(deleteMedia);
 // .patch(updateMedia)
 // .put(updateMedia);
 
 router
-  .route("/:mediaId/likes")
+  .route('/:mediaId/likes')
   .get(getLikes)
   .put(createLike)
   .delete(deleteLike);
 
 router
-  .route("/:mediaId/comments")
+  .route('/:mediaId/comments')
   .get(getComments)
   .put(createComment);
 
-router
-  .route("/:mediaId/comments/:commentId")
-  .get(getComment)
+router.route('/:mediaId/comments/:commentId').get(getComment);
 
 router
-  .route("/:mediaId/comments/:commentId/likes")
+  .route('/:mediaId/comments/:commentId/likes')
   .get(getCommentLikes)
-  .put(createCommentLike)
-  .delete(deleteCommentLike);
+  .put(createCommentLike);
 
 export default router;
