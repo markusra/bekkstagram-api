@@ -34,7 +34,7 @@ router
   .route("/:mediaId/likes")
   .get(getLikes)
   .put(createLike)
-  .post(deleteLike);
+  .delete(deleteLike);
 
 router
   .route("/:mediaId/comments")
@@ -49,6 +49,6 @@ router
   .route("/:mediaId/comments/:commentId/likes")
   .get(getCommentLikes)
   .put(createCommentLike)
-  .post(deleteCommentLike);
+  .delete(deleteCommentLike);
 
 export default router;
