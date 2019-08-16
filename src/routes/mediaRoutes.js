@@ -6,14 +6,12 @@ import {
   createMedia,
   deleteMedia,
   deleteLike,
-  deleteCommentLike,
   getAllMedia,
   getComment,
   getCommentLikes,
   getComments,
   getLikes,
   getMediaById,
-  updateMedia,
 } from '../controllers/mediaController';
 
 const router = express.Router();
