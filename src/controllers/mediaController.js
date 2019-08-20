@@ -111,16 +111,27 @@ export const createLike = (req, res) => {
   const index = media.findIndex(item => item.id === mediaId);
 
   if (index !== -1 && username) {
-    const like = Like({ username });
+    const likes = media[index].likes;
+    const likeIndex = likes.findIndex(like => like.username === username);
 
-    media[index].likes.push(like);
+    if (likeIndex === -1) {
+      const like = Like({ username });
 
-    return res.json(
-      success({
-        message: `New like created for media with id=${mediaId}`,
-        data: like,
-      }),
-    );
+      media[index].likes.push(like);
+
+      return res.json(
+        success({
+          message: `New like created for media with id=${mediaId}`,
+          data: like,
+        }),
+      );
+    } else {
+      return res.json(
+        error({
+          message: `User with username=${username} has already liked the media with id=${mediaId}`,
+        }),
+      );
+    }
   }
 
   return res.json(
@@ -238,12 +249,12 @@ export const createCommentLike = (req, res) => {
 //   if (mediaIndex !== -1 && commentIndex !== -1 && username) {
 
 //     const likes = media[mediaIndex].comments[commentIndex].likes
-    
+
 //     const likeIndex = likes.findIndex(like => like.username === username);
 
 //     if (likeIndex !== -1) {
 //       likes.splice(likeIndex, 1);
-    
+
 
 //       return res.json(
 //         success({
