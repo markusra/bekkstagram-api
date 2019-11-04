@@ -1,4 +1,5 @@
 import express from 'express';
+import { check } from 'express-validator';
 import {
   createComment,
   createCommentLike,
@@ -19,31 +20,48 @@ const router = express.Router();
 router
   .route('/')
   .get(getAllMedia)
-  .post(createMedia);
+  .post([
+    check('url').isURL(),
+    check('description').isAscii(),
+    check('username').isAscii()
+  ],
+    createMedia
+  );
 
 router
   .route('/:mediaId')
   .get(getMediaById)
   .delete(deleteMedia);
-// .patch(updateMedia)
-// .put(updateMedia);
 
 router
   .route('/:mediaId/likes')
   .get(getLikes)
-  .put(createLike)
+  .put([
+    check('mediaId').isNumeric(),
+    check('username').isAscii()
+  ], createLike)
   .delete(deleteLike);
 
 router
   .route('/:mediaId/comments')
   .get(getComments)
-  .put(createComment);
+  .put([
+    check('mediaId').isNumeric(),
+    check('text').isAscii(),
+    check('username').isAscii()
+  ], createComment);
 
-router.route('/:mediaId/comments/:commentId').get(getComment);
+router
+  .route('/:mediaId/comments/:commentId')
+  .get(getComment);
 
 router
   .route('/:mediaId/comments/:commentId/likes')
   .get(getCommentLikes)
-  .put(createCommentLike);
+  .put([
+    check('mediaId').isNumeric(),
+    check('commentId').isNumeric(),
+    check('username').isAscii()
+  ], createCommentLike);
 
 export default router;
