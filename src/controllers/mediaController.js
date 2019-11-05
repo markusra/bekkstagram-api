@@ -1,6 +1,7 @@
 import { error, success } from '../utils/responseTypes';
 import { Comment, Like, Media } from '../models';
 import { initialState } from '../utils/initialState';
+import { validRequest } from '../utils/validation';
 
 let media = initialState();
 
@@ -50,6 +51,8 @@ export const getMediaById = (req, res) => {
 };
 
 export const createMedia = (req, res) => {
+  if (!validRequest(req, res)) return;
+
   const { description, url, username } = req.body;
   const mediaObject = Media({ description, url, username });
 
@@ -106,6 +109,8 @@ export const getLikes = (req, res) => {
 };
 
 export const createLike = (req, res) => {
+  if (!validRequest(req, res)) return;
+
   const { mediaId } = req.params;
   const { username } = req.body;
   const index = media.findIndex(item => item.id === mediaId);
@@ -210,9 +215,10 @@ export const getCommentLikes = (req, res) => {
 };
 
 export const createCommentLike = (req, res) => {
+  if (!validRequest(req, res)) return;
+
   const { mediaId, commentId } = req.params;
   const { username } = req.body;
-  const commentObject = getCommentObject(mediaId, commentId);
 
   const mediaIndex = media.findIndex(item => item.id === mediaId);
   const commentIndex = media[mediaIndex].comments.findIndex(item => item.id === commentId);
@@ -294,12 +300,11 @@ export const getComments = (req, res) => {
 };
 
 export const createComment = (req, res) => {
+  if (!validRequest(req, res)) return;
+
   const { mediaId } = req.params;
   const { text, username } = req.body;
   const index = media.findIndex(item => item.id === mediaId);
-
-  console.log(text);
-  console.log(typeof text)
 
   if (index !== -1 && text
     && (typeof text === "string")
